@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.iyunhe.mapper.TbSalesMapper">
+
+	<!-- 查询所有促销公告板 -->
+	<select id="selectAllSales" resultType="com.iyunhe.pojo.SalesInfo">
+		SELECT * FROM tb_sales
+	</select>
+	
+	<!-- 删除公告板单条记录 -->
+	<delete id="deletesales" parameterType="int">
+		DELETE FROM tb_sales WHERE book_id=#{book_id} 
+	</delete>
+	
+	<!-- 添加公告板单条记录 -->
+	<insert id="insertsales" parameterType="com.iyunhe.pojo.SalesInfo">
+		INSERT INTO tb_sales(sales_name,book_id) VALUES(#{sales_name},#{book_id})
+	</insert>
+	
+	<!--  -->
+	<update id="updatesalesname" parameterType="map">
+		UPDATE tb_sales SET sales_name=#{sales_name} WHERE book_id=#{book_id};
+	</update>
+	
+	
+</mapper>
+
+  
+
+  

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbOperateLogMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbOperateLog">
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="status_pay" jdbcType="INTEGER" property="statusPay" />
+    <result column="status_send" jdbcType="INTEGER" property="statusSend" />
+    <result column="status_receive" jdbcType="INTEGER" property="statusReceive" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="operate_time" jdbcType="TIMESTAMP" property="operateTime" />
+    <association property="tbUserAfter" javaType="com.iyunhe.pojo.TbUserAfter">
+    	<id column="user_id" property="user_id" jdbcType="INTEGER"/>
+    	<result column="user_name" property="user_name" jdbcType="VARCHAR"/>
+    </association>
+  </resultMap>
+   <sql id="Where_Clause">
+	<where>
+      <if test="orderId != null">
+        order_id=#{orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null">
+        and user_id=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="operateTime != null">
+        and operate_time=#{operateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="statusPay != null">
+        and status_pay=#{statusPay,jdbcType=INTEGER}
+      </if>
+      <if test="statusSend != null">
+        and status_send=#{statusSend,jdbcType=INTEGER}
+      </if>
+      <if test="statusReceive != null">
+        and status_receive=#{statusReceive,jdbcType=INTEGER}
+      </if>
+      <if test="status != null">
+        and status=#{status,jdbcType=INTEGER}
+      </if>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+	<where>
+      <if test="condition.orderId != null">
+        and order_id=#{condition.orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="condition.userId != null">
+        and user_id=#{condition.userId,jdbcType=INTEGER}
+      </if>
+      <if test="condition.operateTime != null">
+        and operate_time=#{condition.operateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="condition.statusPay != null">
+        and status_pay=#{condition.statusPay,jdbcType=INTEGER}
+      </if>
+      <if test="condition.statusSend != null">
+        and status_send=#{condition.statusSend,jdbcType=INTEGER}
+      </if>
+      <if test="condition.statusReceive != null">
+        and status_receive=#{condition.statusReceive,jdbcType=INTEGER}
+      </if>
+      <if test="condition.status != null">
+        and status=#{condition.status,jdbcType=INTEGER}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    order_id, tb_operate_log.user_id, user_name, operate_time, status_pay, status_send, 
+    status_receive, status
+  </sql>
+  
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+
+    select count(*) from tb_operate_log
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  
+  <select id="select" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_operate_log left join tb_user_mg on tb_operate_log.user_id=tb_user_mg.user_id
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+      <include refid="Limit_Clause" />
+    </if>
+  </select>
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_operate_log left join tb_user_mg on tb_operate_log.user_id=tb_user_mg.user_id
+    <if test="_parameter != null">
+      <where>
+        order_id=#{_parameter,jdbcType=VARCHAR}
+      </where>
+    </if>
+  </select>
+  <delete id="delete" parameterType="map">
+    delete from tb_operate_log
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+  
+  <delete id="deleteById" parameterType="string">
+    delete from tb_operate_log where order_id=#{_parameter}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbOperateLog">
+
+    insert into tb_operate_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      	operate_time,
+      <if test="statusPay != null">
+        status_pay,
+      </if>
+      <if test="statusSend != null">
+        status_send,
+      </if>
+      <if test="statusReceive != null">
+        status_receive,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      	now(),
+      <if test="statusPay != null">
+        #{statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusSend != null">
+        #{statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="statusReceive != null">
+        #{statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="map">
+ 
+    update tb_operate_log
+    <set>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.operateTime != null">
+        operate_time = #{record.operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.statusPay != null">
+        status_pay = #{record.statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="record.statusSend != null">
+        status_send = #{record.statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="record.statusReceive != null">
+        status_receive = #{record.statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateById" parameterType="com.iyunhe.pojo.TbOperateLog">
+ 
+    update tb_operate_log
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="operateTime != null">
+        operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusPay != null">
+        status_pay = #{statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusSend != null">
+        status_send = #{statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="statusReceive != null">
+        status_receive = #{statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    <where> order_id = #{orderId,jdbcType=VARCHAR}</where>
+  </update>
+</mapper>

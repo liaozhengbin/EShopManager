@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbOrderMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbOrder">
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="person" jdbcType="VARCHAR" property="person" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="order_price" jdbcType="DOUBLE" property="orderPrice" />
+    <result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
+    <result column="status_pay" jdbcType="INTEGER" property="statusPay" />
+    <result column="status_send" jdbcType="INTEGER" property="statusSend" />
+    <result column="status_receive" jdbcType="INTEGER" property="statusReceive" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <association property="tbUser" javaType="com.iyunhe.pojo.TbUser">
+    	<id column="user_id" property="userId" jdbcType="INTEGER"/>
+    	<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+    </association>
+  </resultMap>
+   <sql id="Where_Clause">
+	<where>
+      <if test="orderId != null">
+        and order_id=#{orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null">
+        and user_id=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="address != null">
+        and address=#{address,jdbcType=VARCHAR}
+      </if>
+      <if test="person != null">
+      	<bind name="receivePerson" value="'%'+person+'%'"/>
+        and person like #{receivePerson,jdbcType=VARCHAR}
+      </if>
+      <if test="phone != null">
+        and phone=#{phone,jdbcType=VARCHAR}
+      </if>
+      <if test="orderPrice != null">
+        and order_price=#{orderPrice,jdbcType=DOUBLE}
+      </if>
+      <if test="orderDate != null">
+        and order_date=#{orderDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="statusPay != null">
+        and status_pay=#{statusPay,jdbcType=INTEGER}
+      </if>
+      <if test="statusSend != null">
+        and status_send=#{statusSend,jdbcType=INTEGER}
+      </if>
+      <if test="statusReceive != null">
+        and status_receive=#{statusReceive,jdbcType=INTEGER}
+      </if>
+      <if test="status != null">
+        and status=#{status,jdbcType=INTEGER}
+      </if>
+      <if test="payTime != null">
+        and pay_time=#{payTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+	<where>
+      <if test="condition.orderId != null">
+        and order_id=#{condition.orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="condition.userId != null">
+        and user_id=#{condition.userId,jdbcType=INTEGER}
+      </if>
+      <if test="condition.address != null">
+        and address=#{condition.address,jdbcType=VARCHAR}
+      </if>
+      <if test="condition.person != null">
+        and person=#{condition.person,jdbcType=VARCHAR}
+      </if>
+      <if test="condition.phone != null">
+        and phone=#{condition.phone,jdbcType=VARCHAR}
+      </if>
+      <if test="condition.orderPrice != null">
+        and order_price=#{condition.orderPrice,jdbcType=DOUBLE}
+      </if>
+      <if test="condition.orderDate != null">
+        and order_date=#{condition.orderDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="condition.statusPay != null">
+        and status_pay=#{condition.statusPay,jdbcType=INTEGER}
+      </if>
+      <if test="condition.statusSend != null">
+        and status_send=#{condition.statusSend,jdbcType=INTEGER}
+      </if>
+      <if test="condition.statusReceive != null">
+        and status_receive=#{condition.statusReceive,jdbcType=INTEGER}
+      </if>
+      <if test="condition.status != null">
+        and status=#{condition.status,jdbcType=INTEGER}
+      </if>
+      <if test="condition.payTime != null">
+        and pay_time=#{condition.payTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    order_id, tb_order.user_id, user_name, address, person, phone, order_price, order_date, status_pay, status_send, 
+    status_receive, status, pay_time
+  </sql>
+  
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+
+    select count(*) from tb_order
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  
+  <select id="sumOrderPrice" parameterType="map" resultType="java.lang.Double">
+
+    SELECT SUM(order_price) FROM tb_order 
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+
+  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_order left join tb_user on tb_order.user_id=tb_user.user_id
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+      <include refid="Limit_Clause" />
+    </if>
+  </select>
+  <delete id="delete" parameterType="map">
+    delete from tb_order
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+  
+  <delete id="deleteById" parameterType="string">
+    delete from tb_order where order_id=#{_parameter}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbOrder">
+
+    insert into tb_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="person != null">
+        person,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="orderPrice != null">
+        order_price,
+      </if>
+      <if test="orderDate != null">
+        order_date,
+      </if>
+      <if test="statusPay != null">
+        status_pay,
+      </if>
+      <if test="statusSend != null">
+        status_send,
+      </if>
+      <if test="statusReceive != null">
+        status_receive,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="payTime != null">
+        pay_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="person != null">
+        #{person,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderPrice != null">
+        #{orderPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="orderDate != null">
+        #{orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusPay != null">
+        #{statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusSend != null">
+        #{statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="statusReceive != null">
+        #{statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="payTime != null">
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="map">
+ 
+    update tb_order
+    <set>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.person != null">
+        person = #{record.person,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderPrice != null">
+        order_price = #{record.orderPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="record.orderDate != null">
+        order_date = #{record.orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.statusPay != null">
+        status_pay = #{record.statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="record.statusSend != null">
+        status_send = #{record.statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="record.statusReceive != null">
+        status_receive = #{record.statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.payTime != null">
+        pay_time = #{record.payTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateById" parameterType="com.iyunhe.pojo.TbOrder">
+ 
+    update tb_order
+    <set>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="person != null">
+        person = #{record.person,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderPrice != null">
+        order_price = #{orderPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="orderDate != null">
+        order_date = #{orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusPay != null">
+        status_pay = #{statusPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusSend != null">
+        status_send = #{statusSend,jdbcType=INTEGER},
+      </if>
+      <if test="statusReceive != null">
+        status_receive = #{statusReceive,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="payTime != null">
+        pay_time = #{payTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <where> order_id = #{orderId,jdbcType=VARCHAR}</where>
+  </update>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbOrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbOrderDetail">
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <association property="tbBook" javaType="com.iyunhe.pojo.TbBook">
+	    <id column="book_id" jdbcType="INTEGER" property="bookId" />
+	    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+	    <result column="book_price" jdbcType="DOUBLE" property="bookPrice" />
+    	<result column="store_count" jdbcType="INTEGER" property="storeCount" />
+    </association>
+  </resultMap>
+  <sql id="Where_Clause">
+    <where>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="bookId != null">
+        AND book_id = #{bookId,jdbcType=INTEGER}
+      </if>
+      <if test="num != null">
+        AND num = #{num,jdbcType=INTEGER}
+      </if>
+    </where>
+  </sql>
+
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    order_id, tb_order_detail.book_id, num,book_name,book_price,store_count
+  </sql>
+  <select id="select" parameterType="map" resultMap="BaseResultMap">
+   
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_detail left join tb_book on tb_order_detail.book_id=tb_book.book_id
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  <delete id="delete" parameterType="map">
+
+    delete from tb_order_detail
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbOrderDetail">
+ 
+    insert into tb_order_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="bookId != null">
+        book_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null">
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+
+    select count(*) from tb_order_detail
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  <update id="update" parameterType="map">
+
+    update tb_order_detail
+    <set>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookId != null">
+        book_id = #{record.bookId,jdbcType=INTEGER},
+      </if>
+      <if test="record.num != null">
+        num = #{record.num,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </update>
+
+</mapper>

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbBookMapper">
+
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbBook">
+    <id column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+    <result column="book_logo_small" jdbcType="VARCHAR" property="bookLogoSmall" />
+    <result column="book_logo_big" jdbcType="VARCHAR" property="bookLogoBig" />
+    <result column="book_price" jdbcType="DOUBLE" property="bookPrice" />
+    <result column="book_price_old" jdbcType="DOUBLE" property="bookPriceOld" />
+    <result column="book_author" jdbcType="VARCHAR" property="bookAuthor" />
+    <result column="book_press" jdbcType="VARCHAR" property="bookPress" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="book_date" jdbcType="TIMESTAMP" property="bookDate" />
+    <result column="store_count" jdbcType="INTEGER" property="storeCount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_new" jdbcType="INTEGER" property="isNew" />
+    <result column="is_hot" jdbcType="INTEGER" property="isHot" />
+    <result column="is_garbage" jdbcType="INTEGER" property="isGarbage" />
+    <association property="tbType" javaType="com.iyunhe.pojo.TbType">
+    	<id column="type_id" property="typeId" jdbcType="INTEGER"/>
+    	<result column="type_name" jdbcType="VARCHAR" property="typeName"/>
+    	<result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    </association>
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iyunhe.pojo.TbBook">
+    <result column="book_description" jdbcType="LONGVARCHAR" property="bookDescription" />
+  </resultMap>
+  
+  <sql id="Where_Clause">
+    <where>
+      <if test="bookId != null">
+        book_id = #{bookId,jdbcType=INTEGER}
+      </if>
+      <if test="bookName != null">
+      	<bind name="book_name" value="'%'+bookName+'%'"/>
+        AND book_name like #{book_name,jdbcType=VARCHAR}
+      </if>
+      <if test="bookLogoSmall != null">
+        AND book_logo_small = #{bookLogoSmall,jdbcType=VARCHAR}
+      </if>
+      <if test="bookLogoBig != null">
+        book_logo_big = #{bookLogoBig,jdbcType=VARCHAR}
+      </if>
+      <if test="bookPrice != null">
+        AND book_price = #{bookPrice,jdbcType=DOUBLE}
+      </if>
+      <if test="bookPriceOld != null">
+        AND book_price_old = #{bookPriceOld,jdbcType=DOUBLE}
+      </if>
+      <if test="bookAuthor != null">
+      	<bind name="book_author" value="'%'+bookAuthor+'%'"/>
+        AND book_author like #{book_author,jdbcType=VARCHAR}
+      </if>
+      <if test="bookPress != null">
+        AND book_press = #{bookPress,jdbcType=VARCHAR}
+      </if>
+      <if test="typeId != null and typeId != -1">
+        AND (t1.type_id = #{typeId,jdbcType=INTEGER} OR t2.parent_id = #{typeId,jdbcType=INTEGER} )
+      </if>
+      <if test="bookDate != null">
+        AND book_date = #{bookDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="storeCount != null">
+        AND store_count = #{storeCount,jdbcType=INTEGER}
+      </if>
+      <if test="status != null and status != -1">
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="isNew != null">
+        AND is_new = #{isNew,jdbcType=INTEGER}
+      </if>
+      <if test="isHot != null">
+        AND is_hot = #{isHot,jdbcType=INTEGER}
+      </if>
+      <if test="isGarbage != null">
+        AND is_garbage = #{isGarbage,jdbcType=INTEGER}
+      </if>
+      <if test="bookDescription != null">
+        AND book_description = #{bookDescription,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </sql>
+
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Update_Where_Clause">
+    <where>
+      <if test="condition.bookId != null">
+        book_id = #{record.bookId,jdbcType=INTEGER},
+      </if>
+      <if test="condition.bookName != null">
+        book_name = #{condition.bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="condition.bookLogoSmall != null">
+        book_logo_small = #{condition.bookLogoSmall,jdbcType=VARCHAR},
+      </if>
+      <if test="condition.bookLogoBig != null">
+        book_logo_big = #{condition.bookLogoBig,jdbcType=VARCHAR},
+      </if>
+      <if test="condition.bookPrice != null">
+        book_price = #{condition.bookPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="condition.bookPriceOld != null">
+        book_price_old = #{condition.bookPriceOld,jdbcType=DOUBLE},
+      </if>
+      <if test="condition.bookAuthor != null">
+        book_author = #{condition.bookAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="condition.bookPress != null">
+        book_press = #{condition.bookPress,jdbcType=VARCHAR},
+      </if>
+      <if test="condition.typeId != null">
+        type_id = #{condition.typeId,jdbcType=INTEGER},
+      </if>
+      <if test="condition.bookDate != null">
+        book_date = #{condition.bookDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="condition.storeCount != null">
+        store_count = #{condition.storeCount,jdbcType=INTEGER},
+      </if>
+      <if test="condition.status != null">
+        status = #{condition.status,jdbcType=INTEGER},
+      </if>
+      <if test="condition.isNew != null">
+        is_new = #{condition.isNew,jdbcType=INTEGER},
+      </if>
+      <if test="condition.isHot != null">
+        is_hot = #{condition.isHot,jdbcType=INTEGER},
+      </if>
+      <if test="condition.isGarbage != null">
+        is_garbage = #{condition.isGarbage,jdbcType=INTEGER},
+      </if>
+      <if test="condition.bookDescription != null">
+        book_description = #{condition.bookDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    book_id, book_name, book_logo_small, book_logo_big, book_price, book_price_old, book_author, 
+    book_press, t1.type_id, type_name, book_date, store_count, status, is_new, is_hot, is_garbage
+  </sql>
+  <sql id="Simple_Column_List">
+    book_id, book_name, book_price, book_price_old, book_author, book_press, 
+    t1.type_id,t3.type_name, store_count, status, is_new, is_hot, is_garbage
+  </sql>
+  <sql id="Blob_Column_List">
+    book_description
+  </sql>
+  
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+ 
+    select count(*) FROM tb_book t1 LEFT JOIN tb_type t2 ON t1.type_id=t2.type_id LEFT JOIN tb_type t3
+	ON t2.parent_id=t3.type_id
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  
+  <select id="select" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Simple_Column_List" />
+     FROM tb_book t1 LEFT JOIN tb_type t2 ON t1.type_id=t2.type_id LEFT JOIN tb_type t3
+	ON t2.parent_id=t3.type_id
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+      <include refid="Limit_Clause" />
+    </if>
+  </select>
+  
+  <delete id="delete" parameterType="com.iyunhe.pojo.TbBook">
+    delete from tb_book
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbBook">
+   
+    insert into tb_book
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bookId != null">
+        book_id,
+      </if>
+      <if test="bookName != null">
+        book_name,
+      </if>
+      <if test="bookLogoSmall != null">
+        book_logo_small,
+      </if>
+      <if test="bookLogoBig != null">
+        book_logo_big,
+      </if>
+      <if test="bookPrice != null">
+        book_price,
+      </if>
+      <if test="bookPriceOld != null">
+        book_price_old,
+      </if>
+      <if test="bookAuthor != null">
+        book_author,
+      </if>
+      <if test="bookPress != null">
+        book_press,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="bookDate != null">
+        book_date,
+      </if>
+      <if test="storeCount != null">
+        store_count,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="isNew != null">
+        is_new,
+      </if>
+      <if test="isHot != null">
+        is_hot,
+      </if>
+      <if test="isGarbage != null">
+        is_garbage,
+      </if>
+      <if test="bookDescription != null">
+        book_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bookId != null">
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null">
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="bookLogoSmall != null">
+        #{bookLogoSmall,jdbcType=VARCHAR},
+      </if>
+      <if test="bookLogoBig != null">
+        #{bookLogoBig,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPrice != null">
+        #{bookPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="bookPriceOld != null">
+        #{bookPriceOld,jdbcType=DOUBLE},
+      </if>
+      <if test="bookAuthor != null">
+        #{bookAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPress != null">
+        #{bookPress,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="bookDate != null">
+        #{bookDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storeCount != null">
+        #{storeCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isNew != null">
+        #{isNew,jdbcType=INTEGER},
+      </if>
+      <if test="isHot != null">
+        #{isHot,jdbcType=INTEGER},
+      </if>
+      <if test="isGarbage != null">
+        #{isGarbage,jdbcType=INTEGER},
+      </if>
+      <if test="bookDescription != null">
+        #{bookDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="map">
+    update tb_book
+    <set>
+      <if test="record.bookId != null">
+        book_id = #{record.bookId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookName != null">
+        book_name = #{record.bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookLogoSmall != null">
+        book_logo_small = #{record.bookLogoSmall,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookLogoBig != null">
+        book_logo_big = #{record.bookLogoBig,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookPrice != null">
+        book_price = #{record.bookPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="record.bookPriceOld != null">
+        book_price_old = #{record.bookPriceOld,jdbcType=DOUBLE},
+      </if>
+      <if test="record.bookAuthor != null">
+        book_author = #{record.bookAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookPress != null">
+        book_press = #{record.bookPress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeId != null">
+        type_id = #{record.typeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookDate != null">
+        book_date = #{record.bookDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.storeCount != null">
+        store_count = #{record.storeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.isNew != null">
+        is_new = #{record.isNew,jdbcType=INTEGER},
+      </if>
+      <if test="record.isHot != null">
+        is_hot = #{record.isHot,jdbcType=INTEGER},
+      </if>
+      <if test="record.isGarbage != null">
+        is_garbage = #{record.isGarbage,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookDescription != null">
+        book_description = #{record.bookDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+
+
+	<!-- 修改书籍上下架 -->
+	<update id="updateOnline" parameterType="map">
+		<if test="status==0">
+			UPDATE tb_book SET status=1 WHERE book_id=#{book_id}
+		</if>
+		<if test="status==1">
+			UPDATE tb_book SET status=0 WHERE book_id=#{book_id}
+		</if>
+		
+	</update>
+	
+	<!-- 修改书籍新品 -->
+	<update id="updateNew" parameterType="map">
+		<if test="is_new==0">
+			UPDATE tb_book SET is_new=8 WHERE book_id=#{book_id}
+		</if>
+		<if test="is_new>0">
+			UPDATE tb_book SET is_new=0 WHERE book_id=#{book_id}
+		</if>
+		
+	</update>
+
+	<!-- 修改书籍热销 -->
+	<update id="updateIsHot" parameterType="map">
+		<if test="is_hot==0">
+			UPDATE tb_book SET is_hot=6 WHERE book_id=#{book_id}
+		</if>
+		<if test="is_hot>0">
+			UPDATE tb_book SET is_hot=0 WHERE book_id=#{book_id}
+		</if>
+		
+	</update>
+	
+	
+	<!-- 编辑图书 -->
+	<select id="selectupdatebook" parameterType="int" resultMap="BaseResultMap">
+		SELECT * FROM tb_book WHERE book_id=#{bookId}
+	</select>
+	
+	<!-- 查询回收站 -->
+	<select id="selectrecycle" resultMap="BaseResultMap">
+		SELECT t1.*,t2.type_name FROM tb_book_recycle t1 INNER JOIN tb_type t2 ON t1.type_id=t2.type_id
+	</select>
+	
+	<!-- 根据书籍ID查询书籍信息 -->
+	<select id="selectbook" parameterType="int" resultMap="BaseResultMap">
+		SELECT * FROM tb_book WHERE book_id=#{bookId}
+	</select>
+	
+	
+	<!-- 移入回收站  的同时将书籍“isGarbage” 修改为1-->
+	<insert id="insertrecycle" parameterType="map" >
+		INSERT INTO tb_book_recycle VALUES(#{bookId},#{bookName},#{bookPrice},#{typeId})
+	</insert>
+	
+	<update id="updateBookIsGarbage" parameterType="int">
+		UPDATE tb_book SET is_garbage=1 WHERE book_id=#{book_id}
+	</update>
+	
+	<!-- 移入回收站后  在图书管理页删除 -->
+	<delete id="deleteBookmanager" parameterType="int">
+		 DELETE FROM tb_book WHERE book_id=#{book_id}
+	</delete>
+	
+	<!-- 从回收站彻底删除该图书 -->
+	<delete id="deleterecycle" parameterType="int">
+		 DELETE FROM tb_book_recycle WHERE book_id=#{book_id}
+	</delete>
+	
+	<!-- <select id="cscssv" resultType="com.iyunhe.pojo.TbBook">
+		SELECT * FROM tb_book WHERE book_id={book_id}
+	</select> -->
+	
+	<update id="updateBookInfo" parameterType="map">
+		UPDATE tb_book SET 
+		<if test="is_garbage!=0">
+			is_garbage=1 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		<if test="status!=0">
+			status=1 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		<if test="status!=0">
+			status=0 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		<if test="is_new!=0">
+			is_new=10 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		<if test="is_new!=0">
+			is_garbage=0 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+	 	<if test="is_hot!=0">
+			is_hot=10 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		<if test="is_hot!=0">
+			is_hot=0 WHERE book_id IN 
+			<foreach collection="list" item="ids" separator="," open="("  close=")">
+				#{ids}
+			</foreach>
+		</if>
+		
+	</update>
+</mapper>

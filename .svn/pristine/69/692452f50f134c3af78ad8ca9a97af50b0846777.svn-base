@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbUserMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbUser">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_pwd" jdbcType="VARCHAR" property="userPwd" />
+    <result column="user_head" jdbcType="VARCHAR" property="userHead" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="user_sex" jdbcType="CHAR" property="userSex" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="question_id" jdbcType="INTEGER" property="questionId" />
+    <result column="question_answer" jdbcType="VARCHAR" property="questionAnswer" />
+    <result column="is_activated" jdbcType="INTEGER" property="isActivated" />
+    <result column="is_online" jdbcType="INTEGER" property="isOnline" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+  </resultMap>
+  <!-- write by zlsun -->
+   <sql id="Where_Clause">
+    <where>
+      <if test="userId != null">
+        and user_id=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="userName != null">
+      	<bind name="name" value="'%'+userName+'%'"/>
+        and user_name like #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="userPwd != null">
+        and user_pwd=#{userPwd,jdbcType=VARCHAR}
+      </if>
+      <if test="userHead != null">
+        and user_head=#{userHead,jdbcType=VARCHAR}
+      </if>
+      <if test="userEmail != null">
+        and user_email=#{userEmail,jdbcType=VARCHAR}
+      </if>
+      <if test="userSex != null">
+        and user_sex=#{userSex,jdbcType=CHAR}
+      </if>
+      <if test="userPhone != null">
+        and user_phone=#{userPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="userAddress != null">
+        and user_address=#{userAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="questionId != null">
+        and question_id=#{questionId,jdbcType=INTEGER}
+      </if>
+      <if test="questionAnswer != null">
+        and question_answer=#{questionAnswer,jdbcType=VARCHAR}
+      </if>
+      <if test="isActivated != null">
+        and is_activated=#{isActivated,jdbcType=INTEGER}
+      </if>
+      <if test="isOnline != null">
+        and is_online=#{isOnline,jdbcType=INTEGER}
+      </if>
+      <if test="time != null">
+        and user_id=#{time,jdbcType=TIMESTAMP}
+      </if>
+      <if test="provinceId != null">
+        and province_id=#{provinceId,jdbcType=VARCHAR}
+      </if>
+      <if test="cityId != null">
+        and city_id=#{cityId,jdbcType=VARCHAR}
+      </if>
+      <if test="areaId != null">
+        and area_id=#{areaId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    user_id, user_name, user_pwd, user_head, user_email, user_sex, user_phone, user_address, 
+    question_id, question_answer, is_activated, is_online, time, province_id, city_id, 
+    area_id
+  </sql>
+  <sql id="Index_Column_List">
+    user_name,user_email, user_sex,is_activated
+  </sql>
+  <sql id="User_Column_List">
+    user_id, user_name,user_email, user_sex, user_phone,is_activated, is_online, time
+  </sql>
+  
+  <select id="count"  parameterType="map" resultType="java.lang.Long">
+    select count(*) from tb_user 
+    <if test="_parameter != null">
+    	<include refid="Where_Clause"/>
+     </if>
+  </select>
+  
+  <select id="select"  parameterType="map" resultMap="BaseResultMap">
+    select 
+    <if test="beginIndex != null">
+    	<include refid="User_Column_List"/>
+    </if>
+    <if test="beginIndex == null">
+    	<include refid="Index_Column_List"/>
+    </if>
+	 from tb_user 
+    <if test="_parameter != null">
+    	<include refid="Where_Clause"/>
+    	<include refid="Limit_Clause"/>
+    </if>
+  </select>
+  
+  <select id="selectById"  parameterType="int" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List"/>
+	 from tb_user where user_id=#{_parameter}
+  </select>
+  
+  <delete id="delete" parameterType="int">
+    delete from tb_user where user_id=#{_parameter}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbUser">
+    insert into tb_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null and userId != ''">
+        user_id,
+      </if>
+      <if test="userName != null and userName != ''">
+        user_name,
+      </if>
+      <if test="userPwd != null and userPwd != ''">
+        user_pwd,
+      </if>
+      <if test="userHead != null and userHead != ''">
+        user_head,
+      </if>
+      <if test="userEmail != null and userEmail != ''">
+        user_email,
+      </if>
+      <if test="userSex != null and userSex != ''">
+        user_sex,
+      </if>
+      <if test="userPhone != null and userPhone != ''">
+        user_phone,
+      </if>
+      <if test="userAddress != null and userAddress != ''">
+        user_address,
+      </if>
+      <if test="questionId != null and questionId != ''">
+        question_id,
+      </if>
+      <if test="questionAnswer != null and questionAnswer != ''">
+        question_answer,
+      </if>
+      <if test="isActivated != null and isActivated != ''">
+        is_activated,
+      </if>
+      <if test="isOnline != null and isOnline != ''">
+        is_online,
+      </if>
+      time,
+      <if test="provinceId != null and provinceId != ''">
+        province_id,
+      </if>
+      <if test="cityId != null and cityId != ''">
+        city_id,
+      </if>
+      <if test="areaId != null and areaId != ''">
+        area_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null and userId != ''">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null and userName != ''">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null and userPwd != ''">
+        #{userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userHead != null and userHead != ''">
+        #{userHead,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null and userEmail != ''">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null and userSex != ''">
+        #{userSex,jdbcType=CHAR},
+      </if>
+      <if test="userPhone != null and userPhone != ''">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null and userAddress != ''">
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="questionId != null and questionId != ''">
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="questionAnswer != null and questionAnswer != ''">
+        #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="isActivated != null and isActivated != ''">
+        #{isActivated,jdbcType=INTEGER},
+      </if>
+      <if test="isOnline != null and isOnline != ''">
+        #{isOnline,jdbcType=INTEGER},
+      </if>
+      now(),
+      <if test="provinceId != null and provinceId != ''">
+        #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null and cityId != ''">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null and areaId != ''">
+        #{areaId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="map">
+    update tb_user
+    <set>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userPwd != null">
+        user_pwd = #{record.userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userHead != null">
+        user_head = #{record.userHead,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userEmail != null">
+        user_email = #{record.userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userSex != null">
+        user_sex = #{record.userSex,jdbcType=CHAR},
+      </if>
+      <if test="record.userPhone != null">
+        user_phone = #{record.userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAddress != null">
+        user_address = #{record.userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.questionId != null">
+        question_id = #{record.questionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.questionAnswer != null">
+        question_answer = #{record.questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isActivated != null">
+        is_activated = #{record.isActivated,jdbcType=INTEGER},
+      </if>
+      <if test="record.isOnline != null">
+        is_online = #{record.isOnline,jdbcType=INTEGER},
+      </if>
+      <if test="record.time != null">
+        time = #{record.time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.provinceId != null">
+        province_id = #{record.provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cityId != null">
+        city_id = #{record.cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaId != null">
+        area_id = #{record.areaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </update>
+ 
+  <update id="updateById" parameterType="com.iyunhe.pojo.TbUser">
+    update tb_user
+    <set>
+      <if test="userId != null and userId != ''">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null and userName != ''">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null and userPwd != ''">
+        user_pwd = #{userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userHead != null and userHead != ''">
+        user_head = #{userHead,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null and userEmail != ''">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null and userSex != ''">
+        user_sex = #{userSex,jdbcType=CHAR},
+      </if>
+      <if test="userPhone != null and userPhone != ''">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null and userAddress != ''">
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="questionId != null and questionId != ''">
+        question_id = #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="questionAnswer != null and questionAnswer != ''">
+        question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="isActivated != null and isActivated != ''">
+        is_activated = #{isActivated,jdbcType=INTEGER},
+      </if>
+      <if test="isOnline != null and isOnline != ''">
+        is_online = #{isOnline,jdbcType=INTEGER},
+      </if>
+      <if test="time != null and time != ''">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provinceId != null and provinceId != ''">
+        province_id = #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null and cityId != ''">
+        city_id = #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null and areaId != ''">
+        area_id = #{areaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+	where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

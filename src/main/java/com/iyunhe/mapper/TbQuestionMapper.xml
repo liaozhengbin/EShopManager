@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.TbQuestionMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.TbQuestion">
+    <id column="question_id" jdbcType="INTEGER" property="questionId" />
+    <result column="question_title" jdbcType="VARCHAR" property="questionTitle" />
+  </resultMap>
+  <sql id="Where_Clause">
+    <where>
+      <if test="questionId != null">
+        questionId = #{questionId,jdbcType=INTEGER}
+      </if>
+      <if test="questionTitle != null">
+        questionTitle = #{questionTitle,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    question_id, question_title
+  </sql>
+  <select id="select" parameterType="com.iyunhe.pojo.TbQuestion" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_question
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+      <include refid="Limit_Clause" />
+    </if>
+  </select>
+  
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_question
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from tb_question
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </delete>
+  <delete id="delete" parameterType="map">
+    delete from tb_question
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.iyunhe.pojo.TbQuestion">
+    insert into tb_question
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="questionId != null">
+        question_id,
+      </if>
+      <if test="questionTitle != null">
+        question_title,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="questionId != null">
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="questionTitle != null">
+        #{questionTitle,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+    select count(*) from tb_question
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  <update id="update" parameterType="map">
+    update tb_question
+    <set>
+      <if test="record.questionId != null">
+        question_id = #{record.questionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.questionTitle != null">
+        question_title = #{record.questionTitle,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </update>
+  <update id="updateById" parameterType="com.iyunhe.pojo.TbQuestion">
+    update tb_question
+    set question_title = #{questionTitle,jdbcType=VARCHAR}
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </update>
+</mapper>

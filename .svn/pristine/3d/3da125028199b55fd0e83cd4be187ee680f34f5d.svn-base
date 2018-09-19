@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iyunhe.mapper.CitiesMapper">
+  <resultMap id="BaseResultMap" type="com.iyunhe.pojo.Cities">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cityid" jdbcType="VARCHAR" property="cityid" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="provinceid" jdbcType="VARCHAR" property="provinceid" />
+  </resultMap>
+  
+  <sql id="Limit_Clause">
+    <trim prefix=" LIMIT " suffixOverrides=",">
+      <if test="beginIndex != null">
+        #{beginIndex,jdbcType=INTEGER},
+      </if>
+      <if test="pageSize != null">
+        #{pageSize,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </sql>
+  
+  <sql id="Where_Clause">
+    <where>
+      <if test="id != null">
+        id =#{id,jdbcType=INTEGER}
+      </if>
+      <if test="cityid != null">
+        and cityid =#{cityid,jdbcType=VARCHAR}
+      </if>
+      <if test="city != null">
+        and city =#{city,jdbcType=VARCHAR}
+      </if>
+      <if test="provinceid != null">
+        and provinceid =#{provinceid,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, cityid, city, provinceid
+  </sql>
+  <select id="select" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cities
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+      <include refid="Limit_Clause" />
+    </if>
+  </select>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cities
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from cities
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="delete" parameterType="map">
+    delete from cities
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.iyunhe.pojo.Cities">
+    insert into cities
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cityid != null">
+        cityid,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="provinceid != null">
+        provinceid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null">
+        #{cityid,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceid != null">
+        #{provinceid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+    select count(*) from cities
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </select>
+  <update id="update" parameterType="map">
+    update cities
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.cityid != null">
+        cityid = #{record.cityid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null">
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.provinceid != null">
+        provinceid = #{record.provinceid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Where_Clause" />
+    </if>
+  </update>
+  <update id="updateById" parameterType="com.iyunhe.pojo.Cities">
+    update cities
+    <set>
+      <if test="cityid != null">
+        cityid = #{cityid,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceid != null">
+        provinceid = #{provinceid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
